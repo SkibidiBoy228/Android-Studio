@@ -4,6 +4,7 @@ import ProductSkeleton from '../../components/ProductSkeletion';
 import { router } from 'expo-router';
 import MemoryButton from '../../components/MemoryButton'
 import { MemoryButtonTypes } from '../../constants/MemoryButtonTypes'
+import { formatNumber, canAddDigit, removeLast } from '../../utils/formatNumber';
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
 
@@ -17,7 +18,8 @@ export default function HomeScreen() {
   { text: 'M-', type: MemoryButtonTypes.enabled },
   { text: 'MS', type: MemoryButtonTypes.enabled },
   { text: 'Mv', type: MemoryButtonTypes.enabled },
-];
+  ];
+  const [display, setDisplay] = useState('0');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -35,14 +37,59 @@ export default function HomeScreen() {
     return () => clearTimeout(timer);
   }, []);
 
+  function addDigit(digit: string) {
+  let clean = display.replace(/[\s\u202F]/g, '');
+
+  if (!canAddDigit(clean)) return;
+
+  const next = clean === '0' ? digit : clean + digit;
+
+  setDisplay(formatNumber(next));
+}
+
+function deleteDigit() {
+  setDisplay(removeLast(display));
+}
+
   return (
     <View style={styles.container}>
-    <Pressable
-      style={styles.notFoundButton}
-      onPress={() => router.push('/wrong-page' as any)}
-    >
-      <Text style={styles.notFoundButtonText}>Відкрити неіснуючу сторінку</Text>
-    </Pressable>
+      <Pressable
+        style={styles.notFoundButton}
+        onPress={() => router.push('/wrong-page' as any)}
+      >
+        <Text style={styles.notFoundButtonText}>Відкрити неіснуючу сторінку</Text>
+      </Pressable>
+
+      <Text style={styles.displayText}>{display}</Text>
+
+      <View style={styles.calcTestButtons}>
+        <Pressable style={styles.calcButton} onPress={() => addDigit('1')}>
+          <Text style={styles.calcButtonText}>1</Text>
+        </Pressable>
+
+        <Pressable style={styles.calcButton} onPress={() => addDigit('2')}>
+          <Text style={styles.calcButtonText}>2</Text>
+        </Pressable>
+
+        <Pressable style={styles.calcButton} onPress={() => addDigit('3')}>
+          <Text style={styles.calcButtonText}>3</Text>
+        </Pressable>
+
+        <Pressable style={styles.calcButton} onPress={deleteDigit}>
+          <Text style={styles.calcButtonText}>DEL</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.memoryContainer}>
+        {memoryButtons.map((button) => (
+          <MemoryButton
+            key={button.text}
+            text={button.text}
+            type={button.type}
+          />
+        ))}
+      </View>
+
       {loading ? (
         <FlatList
           data={skeletonData}
@@ -67,15 +114,6 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
-      <View style={styles.memoryContainer}>
-        {memoryButtons.map((button) => (
-          <MemoryButton
-            key={button.text}
-            text={button.text}
-            type={button.type}
-          />
-        ))}
-      </View>
     </View>
   );
 }
@@ -126,5 +164,30 @@ const styles = StyleSheet.create({
   gap: 8,
   marginBottom: 20,
   paddingHorizontal: 4,
-},
+  },
+  displayText: {
+    fontSize: 36,
+    fontWeight: '600',
+    textAlign: 'right',
+    marginBottom: 16,
+  },
+
+  calcTestButtons: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 16,
+  },
+
+  calcButton: {
+    backgroundColor: '#222',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+
+  calcButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
 }); 
