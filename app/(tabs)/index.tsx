@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
 import ProductSkeleton from '../../components/ProductSkeletion';
+import { Link } from 'expo-router';
+import { router } from 'expo-router';
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
 
@@ -26,6 +28,12 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+    <Pressable
+      style={styles.notFoundButton}
+      onPress={() => router.push('/wrong-page' as any)}
+    >
+      <Text style={styles.notFoundButtonText}>Відкрити неіснуючу сторінку</Text>
+    </Pressable>
       {loading ? (
         <FlatList
           data={skeletonData}
@@ -78,4 +86,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#222',
   },
+  notFoundButton: {
+  backgroundColor: '#222',
+  color: '#fff',
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 10,
+  textAlign: 'center',
+  marginBottom: 16,
+  overflow: 'hidden',
+  
+  },
+  notFoundButtonText: {
+  color: '#fff',
+  textAlign: 'center',
+  fontSize: 16,
+},
 }); 
