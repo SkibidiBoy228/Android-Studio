@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
 import ProductSkeleton from '../../components/ProductSkeletion';
-import { Link } from 'expo-router';
 import { router } from 'expo-router';
+import MemoryButton from '../../components/MemoryButton'
+import { MemoryButtonTypes } from '../../constants/MemoryButtonTypes'
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{ id: string; title: string }[]>([]);
+  const memoryButtons = [
+  { text: 'MC', type: MemoryButtonTypes.disabled },
+  { text: 'MR', type: MemoryButtonTypes.disabled },
+  { text: 'M+', type: MemoryButtonTypes.enabled },
+  { text: 'M-', type: MemoryButtonTypes.enabled },
+  { text: 'MS', type: MemoryButtonTypes.enabled },
+  { text: 'Mv', type: MemoryButtonTypes.enabled },
+];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,6 +67,15 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
+      <View style={styles.memoryContainer}>
+        {memoryButtons.map((button) => (
+          <MemoryButton
+            key={button.text}
+            text={button.text}
+            type={button.type}
+          />
+        ))}
+      </View>
     </View>
   );
 }
@@ -101,5 +119,12 @@ const styles = StyleSheet.create({
   color: '#fff',
   textAlign: 'center',
   fontSize: 16,
+  },
+  memoryContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  gap: 8,
+  marginBottom: 20,
+  paddingHorizontal: 4,
 },
 }); 
