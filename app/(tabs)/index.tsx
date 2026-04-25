@@ -51,6 +51,30 @@ function deleteDigit() {
   setDisplay(removeLast(display));
 }
 
+function cleanDisplayValue(value: string): number {
+  return Number(value.replace(/[\s\u202F]/g, ''));
+}
+
+function squareNumber() {
+  const currentValue = cleanDisplayValue(display);
+  const result = currentValue * currentValue;
+
+  setDisplay(formatNumber(String(result)));
+}
+
+function squareRootNumber() {
+  const currentValue = cleanDisplayValue(display);
+
+  if (currentValue < 0) {
+    setDisplay('Error');
+    return;
+  }
+
+  const result = Math.sqrt(currentValue);
+
+  setDisplay(formatNumber(String(result)));
+}
+
   return (
     <View style={styles.container}>
       <Pressable
@@ -73,6 +97,14 @@ function deleteDigit() {
 
         <Pressable style={styles.calcButton} onPress={() => addDigit('3')}>
           <Text style={styles.calcButtonText}>3</Text>
+        </Pressable>
+
+        <Pressable style={styles.calcButton} onPress={squareNumber}>
+          <Text style={styles.calcButtonText}>x²</Text>
+        </Pressable>
+
+        <Pressable style={styles.calcButton} onPress={squareRootNumber}>
+          <Text style={styles.calcButtonText}>√x</Text>
         </Pressable>
 
         <Pressable style={styles.calcButton} onPress={deleteDigit}>
