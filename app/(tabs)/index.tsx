@@ -1,25 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
-import ProductSkeleton from '../../components/ProductSkeletion';
 import { router } from 'expo-router';
-import MemoryButton from '../../components/MemoryButton'
-import { MemoryButtonTypes } from '../../constants/MemoryButtonTypes'
-import { formatNumber, canAddDigit, removeLast } from '../../utils/formatNumber';
+
+import ProductSkeleton from '../../components/ProductSkeletion';
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
 
 export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<{ id: string; title: string }[]>([]);
-  const memoryButtons = [
-  { text: 'MC', type: MemoryButtonTypes.disabled },
-  { text: 'MR', type: MemoryButtonTypes.disabled },
-  { text: 'M+', type: MemoryButtonTypes.enabled },
-  { text: 'M-', type: MemoryButtonTypes.enabled },
-  { text: 'MS', type: MemoryButtonTypes.enabled },
-  { text: 'Mv', type: MemoryButtonTypes.enabled },
-  ];
-  const [display, setDisplay] = useState('0');
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,90 +26,21 @@ export default function HomeScreen() {
     return () => clearTimeout(timer);
   }, []);
 
-  function addDigit(digit: string) {
-  let clean = display.replace(/[\s\u202F]/g, '');
-
-  if (!canAddDigit(clean)) return;
-
-  const next = clean === '0' ? digit : clean + digit;
-
-  setDisplay(formatNumber(next));
-}
-
-function deleteDigit() {
-  setDisplay(removeLast(display));
-}
-
-function cleanDisplayValue(value: string): number {
-  return Number(value.replace(/[\s\u202F]/g, ''));
-}
-
-function squareNumber() {
-  const currentValue = cleanDisplayValue(display);
-  const result = currentValue * currentValue;
-
-  setDisplay(formatNumber(String(result)));
-}
-
-function squareRootNumber() {
-  const currentValue = cleanDisplayValue(display);
-
-  if (currentValue < 0) {
-    setDisplay('Error');
-    return;
-  }
-
-  const result = Math.sqrt(currentValue);
-
-  setDisplay(formatNumber(String(result)));
-}
-
   return (
     <View style={styles.container}>
       <Pressable
         style={styles.notFoundButton}
         onPress={() => router.push('/wrong-page' as any)}
       >
-        <Text style={styles.notFoundButtonText}>Відкрити неіснуючу сторінку</Text>
+        <Text style={styles.buttonText}>Відкрити неіснуючу сторінку</Text>
       </Pressable>
 
-      <Text style={styles.displayText}>{display}</Text>
-
-      <View style={styles.calcTestButtons}>
-        <Pressable style={styles.calcButton} onPress={() => addDigit('1')}>
-          <Text style={styles.calcButtonText}>1</Text>
-        </Pressable>
-
-        <Pressable style={styles.calcButton} onPress={() => addDigit('2')}>
-          <Text style={styles.calcButtonText}>2</Text>
-        </Pressable>
-
-        <Pressable style={styles.calcButton} onPress={() => addDigit('3')}>
-          <Text style={styles.calcButtonText}>3</Text>
-        </Pressable>
-
-        <Pressable style={styles.calcButton} onPress={squareNumber}>
-          <Text style={styles.calcButtonText}>x²</Text>
-        </Pressable>
-
-        <Pressable style={styles.calcButton} onPress={squareRootNumber}>
-          <Text style={styles.calcButtonText}>√x</Text>
-        </Pressable>
-
-        <Pressable style={styles.calcButton} onPress={deleteDigit}>
-          <Text style={styles.calcButtonText}>DEL</Text>
-        </Pressable>
-      </View>
-
-      <View style={styles.memoryContainer}>
-        {memoryButtons.map((button) => (
-          <MemoryButton
-            key={button.text}
-            text={button.text}
-            type={button.type}
-          />
-        ))}
-      </View>
+      <Pressable
+        style={styles.calculatorButton}
+        onPress={() => router.push('/calculator')}
+      >
+        <Text style={styles.buttonText}>Відкрити калькулятор</Text>
+      </Pressable>
 
       {loading ? (
         <FlatList
@@ -156,13 +76,16 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: '#fff',
   },
+
   row: {
     justifyContent: 'space-between',
   },
+
   productCard: {
     width: '48%',
     marginBottom: 16,
   },
+
   productImage: {
     width: '100%',
     aspectRatio: 1,
@@ -170,56 +93,32 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 8,
   },
+
   productTitle: {
     fontSize: 14,
     color: '#222',
   },
+
   notFoundButton: {
-  backgroundColor: '#222',
-  color: '#fff',
-  paddingVertical: 12,
-  paddingHorizontal: 16,
-  borderRadius: 10,
-  textAlign: 'center',
-  marginBottom: 16,
-  overflow: 'hidden',
-  
-  },
-  notFoundButtonText: {
-  color: '#fff',
-  textAlign: 'center',
-  fontSize: 16,
-  },
-  memoryContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  gap: 8,
-  marginBottom: 20,
-  paddingHorizontal: 4,
-  },
-  displayText: {
-    fontSize: 36,
-    fontWeight: '600',
-    textAlign: 'right',
-    marginBottom: 16,
-  },
-
-  calcTestButtons: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 16,
-  },
-
-  calcButton: {
     backgroundColor: '#222',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 8,
+    borderRadius: 10,
+    marginBottom: 12,
   },
 
-  calcButtonText: {
+  calculatorButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+
+  buttonText: {
     color: '#fff',
+    textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
   },
-}); 
+});
