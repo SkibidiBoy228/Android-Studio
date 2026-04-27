@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { router } from 'expo-router';
-
+import AnimatedButton from '../components/AnimatedButton';
 import MemoryButton from '../components/MemoryButton';
 import { MemoryButtonTypes } from '../constants/MemoryButtonTypes';
 import { formatNumber, canAddDigit, removeLast } from '../utils/formatNumber';
@@ -218,51 +218,51 @@ export default function CalculatorScreen() {
 
       {isLandscape && (
         <View style={styles.row}>
-          <CalcButton text="sin" onPress={() => trigAction('sin')} />
-          <CalcButton text="cos" onPress={() => trigAction('cos')} />
-          <CalcButton text="tan" onPress={() => trigAction('tan')} />
-          <CalcButton text="ctg" onPress={() => trigAction('ctg')} />
+          <AnimatedButton text="sin" onPress={() => trigAction('sin')} />
+          <AnimatedButton text="cos" onPress={() => trigAction('cos')} />
+          <AnimatedButton text="tan" onPress={() => trigAction('tan')} />
+          <AnimatedButton text="ctg" onPress={() => trigAction('ctg')} />
         </View>
       )}
 
       <View style={styles.row}>
-        <CalcButton text="C" onPress={clearCalculator} />
-        <CalcButton text="+/-" onPress={changeSign} />
-        <CalcButton text="√x" onPress={squareRootNumber} />
-        <CalcButton text="x²" onPress={squareNumber} />
+        <AnimatedButton text="C" onPress={clearCalculator} />
+        <AnimatedButton text="+/-" onPress={changeSign} />
+        <AnimatedButton text="√x" onPress={squareRootNumber} />
+        <AnimatedButton text="x²" onPress={squareNumber} />
       </View>
 
       <View style={styles.row}>
-        <CalcButton text="7" onPress={() => addDigit('7')} />
-        <CalcButton text="8" onPress={() => addDigit('8')} />
-        <CalcButton text="9" onPress={() => addDigit('9')} />
-        <CalcButton text="÷" onPress={() => chooseOperation('/')} />
+        <AnimatedButton text="7" onPress={() => addDigit('7')} />
+        <AnimatedButton text="8" onPress={() => addDigit('8')} />
+        <AnimatedButton text="9" onPress={() => addDigit('9')} />
+        <AnimatedButton text="÷" onPress={() => chooseOperation('/')} />
       </View>
 
       <View style={styles.row}>
-        <CalcButton text="4" onPress={() => addDigit('4')} />
-        <CalcButton text="5" onPress={() => addDigit('5')} />
-        <CalcButton text="6" onPress={() => addDigit('6')} />
-        <CalcButton text="×" onPress={() => chooseOperation('*')} />
+        <AnimatedButton text="4" onPress={() => addDigit('4')} />
+        <AnimatedButton text="5" onPress={() => addDigit('5')} />
+        <AnimatedButton text="6" onPress={() => addDigit('6')} />
+        <AnimatedButton text="×" onPress={() => chooseOperation('*')} />
       </View>
 
       <View style={styles.row}>
-        <CalcButton text="1" onPress={() => addDigit('1')} />
-        <CalcButton text="2" onPress={() => addDigit('2')} />
-        <CalcButton text="3" onPress={() => addDigit('3')} />
-        <CalcButton text="-" onPress={() => chooseOperation('-')} />
+        <AnimatedButton text="1" onPress={() => addDigit('1')} />
+        <AnimatedButton text="2" onPress={() => addDigit('2')} />
+        <AnimatedButton text="3" onPress={() => addDigit('3')} />
+        <AnimatedButton text="-" onPress={() => chooseOperation('-')} />
       </View>
 
       <View style={styles.row}>
-        <CalcButton text="0" onPress={() => addDigit('0')} />
-        <CalcButton text="." onPress={addDot} />
-        <CalcButton text="DEL" onPress={deleteDigit} />
-        <CalcButton text="+" onPress={() => chooseOperation('+')} />
+        <AnimatedButton text="0" onPress={() => addDigit('0')} />
+        <AnimatedButton text="." onPress={addDot} />
+        <AnimatedButton text="DEL" onPress={deleteDigit} />
+        <AnimatedButton text="+" onPress={() => chooseOperation('+')} />
       </View>
 
       <View style={styles.row}>
-        <CalcButton text="%" onPress={() => chooseOperation('%')} />
-        <CalcButton text="=" onPress={calculateResult} wide />
+        <AnimatedButton text="%" onPress={() => chooseOperation('%')} />
+        <AnimatedButton text="=" onPress={calculateResult} />
       </View>
 
       <Text style={styles.hint}>
@@ -271,21 +271,6 @@ export default function CalculatorScreen() {
     </ScrollView>
   );
 }
-
-type CalcButtonProps = {
-  text: string;
-  onPress: () => void;
-  wide?: boolean;
-};
-
-function CalcButton({ text, onPress, wide }: CalcButtonProps) {
-  return (
-    <Pressable style={[styles.button, wide && styles.wideButton]} onPress={onPress}>
-      <Text style={styles.buttonText}>{text}</Text>
-    </Pressable>
-  );
-}
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -340,8 +325,8 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'row',
-    gap: 10,
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginBottom: 12,
   },
 
   button: {
