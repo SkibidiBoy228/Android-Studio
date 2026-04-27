@@ -23,6 +23,8 @@ export default function CurrencyScreen() {
   const [rates, setRates] = useState<CurrencyRate[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+
 
   function formatDateForApi(value: string) {
     return value.replaceAll('-', '');
@@ -53,6 +55,15 @@ export default function CurrencyScreen() {
     }
   }
 
+  const filteredRates = rates.filter((item) => {
+  const query = search.toLowerCase().trim();
+
+  return (
+    item.cc.toLowerCase().includes(query) ||
+    item.txt.toLowerCase().includes(query)
+  );
+    });
+
   return (
     <View style={styles.container}>
       <Pressable style={styles.backButton} onPress={() => router.back()}>
@@ -70,16 +81,25 @@ export default function CurrencyScreen() {
         placeholder="YYYY-MM-DD"
       />
 
+    <TextInput
+        style={styles.input}
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Пошук за кодом або назвою валюти"
+    />
+
+
       <Pressable style={styles.loadButton} onPress={loadRates}>
         <Text style={styles.loadButtonText}>Завантажити курси</Text>
       </Pressable>
+
 
       {loading && <ActivityIndicator size="large" />}
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <FlatList
-        data={rates}
+        data={filteredRates}
         keyExtractor={(item) => item.cc}
         renderItem={({ item }) => (
           <View style={styles.card}>
