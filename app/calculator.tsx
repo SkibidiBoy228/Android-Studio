@@ -12,6 +12,7 @@ import AnimatedButton from '../components/AnimatedButton';
 import MemoryButton from '../components/MemoryButton';
 import { MemoryButtonTypes } from '../constants/MemoryButtonTypes';
 import { formatNumber, canAddDigit, removeLast } from '../utils/formatNumber';
+import InfiniteTapAnimation from '../components/InfinityTapAnimation';
 
 export default function CalculatorScreen() {
   const [display, setDisplay] = useState('0');
@@ -199,6 +200,8 @@ export default function CalculatorScreen() {
       <Pressable style={styles.backButton} onPress={() => router.back()}>
         <Text style={styles.backButtonText}>Назад</Text>
       </Pressable>
+
+      <InfiniteTapAnimation />
 
       <Text style={styles.title}>Калькулятор</Text>
 
