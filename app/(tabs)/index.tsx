@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
-
 import ProductSkeleton from '../../components/ProductSkeletion';
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
@@ -40,6 +39,13 @@ export default function HomeScreen() {
         onPress={() => router.push('/calculator')}
       >
         <Text style={styles.buttonText}>Відкрити калькулятор</Text>
+      </Pressable>
+
+      <Pressable
+        style={styles.currencyButton}
+        onPress={() => router.push('/currency' as any)}
+      >
+        <Text style={styles.buttonText}>Курси валют</Text>
       </Pressable>
 
       {loading ? (
@@ -120,5 +126,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: '600',
+  },
+  currencyButton: {
+  backgroundColor: '#34A853',
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  borderRadius: 10,
+  marginBottom: 16,
   },
 });
