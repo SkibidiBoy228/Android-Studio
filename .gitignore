@@ -16,6 +16,8 @@ dist/
 web-build/
 expo-env.d.ts
 
+eas.json
+app.json
 # =========================
 # React Native / Metro
 # =========================

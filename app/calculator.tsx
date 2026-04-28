@@ -13,6 +13,7 @@ import MemoryButton from '../components/MemoryButton';
 import { MemoryButtonTypes } from '../constants/MemoryButtonTypes';
 import { formatNumber, canAddDigit, removeLast } from '../utils/formatNumber';
 import InfiniteTapAnimation from '../components/InfinityTapAnimation';
+import SwipeMoveAnimation from '../components/SwipeMoveAnimation';
 
 export default function CalculatorScreen() {
   const [display, setDisplay] = useState('0');
@@ -202,6 +203,8 @@ export default function CalculatorScreen() {
       </Pressable>
 
       <InfiniteTapAnimation />
+
+      <SwipeMoveAnimation />
 
       <Text style={styles.title}>Калькулятор</Text>
 
