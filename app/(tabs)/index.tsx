@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import ProductSkeleton from '../../components/ProductSkeletion';
+import InfiniteTapAnimation from '../../components/InfinityTapAnimation';
+import SwipeMoveAnimation from '../../components/SwipeMoveAnimation';
 
 const skeletonData = Array.from({ length: 8 }, (_, i) => ({ id: i.toString() }));
 
@@ -72,6 +74,10 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
+
+      <InfiniteTapAnimation />
+      
+      <SwipeMoveAnimation />
     </View>
   );
 }

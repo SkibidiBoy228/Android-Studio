@@ -8,45 +8,74 @@ import {
 } from 'react-native';
 
 export default function SwipeMoveAnimation() {
-  const positionX = useRef(new Animated.Value(0)).current;
+  const position = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
   const [status, setStatus] = useState('Очікує свайп');
 
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dx) > 20;
+        return (
+          Math.abs(gestureState.dx) > 20 ||
+          Math.abs(gestureState.dy) > 20
+        );
       },
 
       onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dx < -50) {
-          setStatus('Анімація запущена');
+        const { dx, dy } = gestureState;
 
-          Animated.timing(positionX, {
-            toValue: -180,
-            duration: 700,
-            useNativeDriver: true,
-          }).start(() => {
-            setStatus('Стан змінено після завершення');
-          });
+        let targetX = 0;
+        let targetY = 0;
+        let direction = '';
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+          if (dx > 50) {
+            targetX = 160;
+            direction = 'праворуч';
+          } else if (dx < -50) {
+            targetX = -160;
+            direction = 'ліворуч';
+          }
         } else {
-          Animated.timing(positionX, {
-            toValue: 0,
-            duration: 250,
+          if (dy > 50) {
+            targetY = 90;
+            direction = 'вниз';
+          } else if (dy < -50) {
+            targetY = -90;
+            direction = 'вгору';
+          }
+        }
+
+        if (!direction) {
+          Animated.spring(position, {
+            toValue: { x: 0, y: 0 },
             useNativeDriver: true,
           }).start();
+          return;
         }
+
+        setStatus(`Свайп ${direction}: анімація запущена`);
+
+        Animated.sequence([
+          Animated.timing(position, {
+            toValue: { x: targetX, y: targetY },
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(position, {
+            toValue: { x: 0, y: 0 },
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          setStatus(`Стан змінено після свайпу ${direction}`);
+        });
       },
     })
   ).current;
 
-  function resetAnimation() {
-    positionX.setValue(0);
-    setStatus('Очікує свайп');
-  }
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Свайп ліворуч</Text>
+      <Text style={styles.title}>Анімація свайпів</Text>
       <Text style={styles.status}>{status}</Text>
 
       <View style={styles.area}>
@@ -55,17 +84,16 @@ export default function SwipeMoveAnimation() {
           style={[
             styles.box,
             {
-              transform: [{ translateX: positionX }],
+              transform: [
+                { translateX: position.x },
+                { translateY: position.y },
+              ],
             },
           ]}
         >
           <Text style={styles.boxText}>Swipe</Text>
         </Animated.View>
       </View>
-
-      <Text style={styles.reset} onPress={resetAnimation}>
-        Скинути
-      </Text>
     </View>
   );
 }
@@ -91,13 +119,12 @@ const styles = StyleSheet.create({
   },
 
   area: {
-    height: 120,
+    height: 220,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'flex-end',
     backgroundColor: '#fff',
     borderRadius: 16,
     overflow: 'hidden',
-    paddingHorizontal: 16,
   },
 
   box: {
@@ -113,12 +140,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '700',
-  },
-
-  reset: {
-    marginTop: 14,
-    color: '#007AFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });
